@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Insurance Claims Filing System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        form {
+            margin-bottom: 30px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+        input[type="submit"],
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        input[type="submit"]:hover,
+        button:hover {
+            background-color: #45a049;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .filed {
+            color: green;
+            font-weight: bold;
+        }
+        .not-filed {
+            color: red;
+            font-weight: bold;
+        }
+        .optimize-btn {
+            display: block;
+            width: 220px;
+            margin: 20px auto;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Insurance Claims Filing System</h1>
+        <form method="POST" action="{{ url_for('add_claim') }}">
+            <label for="claimant_name">Claimant Name:</label>
+            <input type="text" id="claimant_name" name="claimant_name" required>
+
+            <label for="claim_amount">Claim Amount (in USD):</label>
+            <input type="number" id="claim_amount" name="claim_amount" step="0.01" required>
+
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="4"></textarea>
+
+            <input type="submit" value="Submit Claim">
+        </form>
+
+        <h2>Claims Dashboard</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Claimant Name</th>
+                <th>Amount</th>
+                <th>Description</th>
+                <th>Score</th>
+                <th>Filing Status</th>
+            </tr>
+            {% for claim in claims %}
+            <tr>
+                <td>{{ claim.id }}</td>
+                <td>{{ claim.claimant_name }}</td>
+                <td>${{ '%.2f'|format(claim.claim_amount) }}</td>
+                <td>{{ claim.description }}</td>
+                <td>{{ '%.2f'|format(claim.score) }}</td>
+                <td>
+                    {% if claim.filed %}
+                        <span class="filed">Filed</span>
+                    {% else %}
+                        <span class="not-filed">Pending</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <!-- Button to run the optimization algorithm -->
+        <div class="optimize-btn">
+            <a href="{{ url_for('optimize') }}">
+                <button type="button">Optimize and File Claims</button>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
